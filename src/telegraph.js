@@ -810,9 +810,6 @@ var Telegraph = function (ctxId, config) {
 
         function drawArrowPoint() {
 
-            if (globalPieMode) {
-                return;
-            }
             var _posX = uIGlobalPadding2 + (selectionCurrentIndexFloat - selectionStartIndexFloat  ) *
                 mainAxis.getFactorX(),
                 _from = fMathFloor(selectionCurrentIndexFloat),
@@ -826,6 +823,16 @@ var Telegraph = function (ctxId, config) {
                 _proposedTooltipLeft = _proposedTooltipLeft - 15;
             }
 
+
+            if (globalPieMode) {
+                divTooltipContainer.style.left = _proposedTooltipLeft + CONST_PIXEL; //todo optimize
+                updateLegendValue(_value);
+                divTooltipDate.innerHTML = currentZoomState === STATE_ZOOM_HOURS ?
+                    formatTime(xData[_from], vTrue, vTrue) :
+                    formatDate(xData[_from], vTrue, vTrue);
+                showTooltip();
+                return;
+            }
 
             if (_proposedTooltipLeft < 0) {
                 _proposedTooltipLeft = 0;
