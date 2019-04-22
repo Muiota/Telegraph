@@ -2685,7 +2685,7 @@ var Telegraph = function (ctxId, config) {
             assignSelectionFactors();
         }
 
-        if (needUpdateFilterFactor || inTransition() || vTrue) {
+        if (needUpdateFilterFactor || inTransition()) {
             needUpdateFilterFactor = vFalse;
             assignFilterFactors();
         }
