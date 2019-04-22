@@ -324,3 +324,20 @@ button, button:hover, button:after, button:focus {
 .chart-container .button.checked .button-text {
     margin-left: 5px;
 }
+
+.bugs
+{
+    color: #c92404;
+}
+
+.bugs .fixed,
+.bugs .fixed:after
+{
+    color: #32802c;
+
+}
+
+.bugs .fixed:after {
+    content: " (fixed)";
+
+}
