@@ -286,6 +286,7 @@ var Telegraph = function (ctxId, config) {
             localMinY = val;
             animate(factorY, setFactorY, -(height - 2) / (localMaxY - localMinY),
                 vNull, vTrue);
+
         }
 
         function getLocalMaxY() {
@@ -1595,8 +1596,9 @@ var Telegraph = function (ctxId, config) {
         animate(filterEndIndexFloat, setFilterEndIndexFloat, defaultChart.getLastIndex(), CONST_ZOOM_ANIMATION_SPEED);
         animate(filterStartIndexFloat, setFilterStartIndexFloat, 1, CONST_ZOOM_ANIMATION_SPEED);
 
-        animate(zoomStartFloat, assignZoomStart, storedZoomStartFloat, CONST_ZOOM_ANIMATION_SPEED + 2);
+
         animate(zoomEndFloat, assignZoomEnd, storedZoomEndFloat, CONST_ZOOM_ANIMATION_SPEED + 2);
+        animate(zoomStartFloat, assignZoomStart, storedZoomStartFloat, CONST_ZOOM_ANIMATION_SPEED + 2);
 
     }
 
@@ -1683,25 +1685,30 @@ var Telegraph = function (ctxId, config) {
         }
 
 
-
         currentZoomState = STATE_ZOOM_TRANSFORM_TO_DAYS;
         changeChildClass(CONST_CHART_DETAIL);
         changeChildClass(CONST_CHART_MASTER, vTrue);
         swapMasterDetailCharts();
         consistSettings(detailCharts, charts);
-        setFilterStartIndexFloat(storedFilterStartIndexFloat);
-        setFilterEndIndexFloat(storedFilterEndIndexFloat);
+        if (storedFilterEndIndexFloat >= filterStartIndexFloat) {
+            setFilterEndIndexFloat(storedFilterEndIndexFloat);
+            setFilterStartIndexFloat(storedFilterStartIndexFloat);
+        } else {
+            setFilterStartIndexFloat(storedFilterStartIndexFloat);
+            setFilterEndIndexFloat(storedFilterEndIndexFloat);
+        }
+
 
         assignZoomStart(storedProposedPosition, 1);
         setZoomStart(storedProposedPosition, 1);
         assignZoomEnd(storedProposedPosition + 1, 1);
         setZoomEnd(storedProposedPosition + 1, 1);
 
-        freezeAxis();
-        animationCounter = 1;
-        restoreSelection();
-        animate(animationCounter, setAnimationCounter, 0.01, CONST_ZOOM_ANIMATION_SPEED);
-        updateTitleStatus();
+                freezeAxis();
+                animationCounter = 1;
+                restoreSelection();
+                animate(animationCounter, setAnimationCounter, 0.01, CONST_ZOOM_ANIMATION_SPEED);
+                updateTitleStatus();
     }
 
     function loadHoursDataSuccess(data, timeStamp) {
@@ -2673,12 +2680,12 @@ var Telegraph = function (ctxId, config) {
         processAnimations();
         //  perf.mark(perf.animation);
 
-        if (needUpdateMainFactor) {
+        if (needUpdateMainFactor || inTransition()) {
             needUpdateMainFactor = vFalse;
             assignSelectionFactors();
         }
 
-        if (needUpdateFilterFactor) {
+        if (needUpdateFilterFactor || inTransition() || vTrue) {
             needUpdateFilterFactor = vFalse;
             assignFilterFactors();
         }
